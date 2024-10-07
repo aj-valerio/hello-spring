@@ -1,11 +1,13 @@
 package org.launchcode.hello_spring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
-@ResponseBody
-@RequestMapping("hello")
 public class HelloController {
 
 //    @GetMapping("hello")
@@ -16,36 +18,41 @@ public class HelloController {
 
     //lives at /hello/goodbye
     @GetMapping("goodbye")
+    @ResponseBody
     public String goodbye(){
         return "Goodbye, Spring!";
     }
 
     //Handles requests of the form /hello?name=LaunchCode
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public String helloWithQueryParam(@RequestParam String name){
-        return "Hello, " + name + "!";
+    @RequestMapping(value = "hello", method = {RequestMethod.GET, RequestMethod.POST})
+    public String helloWithQueryParam(@RequestParam String name, Model model){
+        String myGreeting = "Hello, " + name + "!";
+        model.addAttribute("greeting", myGreeting);
+        return "hello";
     }
 
     //Handles requests of the form /hello/Launchcode
     @GetMapping("hello/{name}")
-    @ResponseBody
-    public String helloWithPathParam(@PathVariable String name){
-        return "Hello, " + name + "!";
+    public String helloWithPathParam(@PathVariable String name, Model model){
+        String myGreeting = "Hello, " + name + "!";
+        model.addAttribute("greeting", myGreeting);
+        return "hello";
     }
 
     // Place form on web page for user input
     @GetMapping("form")
-    @ResponseBody
     public String helloForm(){
-        return "<html>" +
-                "<body>" +
-                "<form action='hello'>" +   //submit request to /hello
-                "<input type='text'; name='name'>" +
-                "<input type='submit'; value='Greet me!'>" +
-                "</form>" +
-                "</body>" +
-                "</html>";
+        return "form";
+    }
+
+    @GetMapping("hello-list")
+    public String helloNames(Model model){
+        List<String> nameList = new ArrayList<>();
+        nameList.add("LaunchCode");
+        nameList.add("Java");
+        nameList.add("JavaScript");
+        model.addAttribute("names", nameList);
+        return "hello-list";
     }
 
 }
